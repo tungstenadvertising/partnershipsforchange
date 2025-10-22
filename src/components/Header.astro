@@ -1,0 +1,265 @@
+---
+import Logo from "../images/pfc-logo.png";
+import LogoDark from "../images/pfc-logo-dark.png";
+// Navigation data - single source of truth
+const navigationLinks = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About Us" },
+  { href: "/about-you", label: "About You" },
+  { href: "/our-project", label: "Our Project" },
+  { href: "/get-involved", label: "Get Involved" },
+  { href: "/resources", label: "Resources" },
+  { href: "/contact", label: "Contact Us" },
+  { href: "/donor-portal", label: "Donor and Partner Portal", isButton: true }
+];
+---
+<header class="header-transparent fixed w-full z-50 transition-all duration-300">
+  <div class="max-w-7xl  mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2">
+      <img src={Logo.src} alt="PFC Logo" class="max-w-48 logo-regular" width="180" height="76" loading="eager" fetchpriority="high" decoding="async" />
+      <img src={LogoDark.src} alt="PFC Logo" class="max-w-48 logo-dark" width="180" height="76" loading="eager" fetchpriority="high" decoding="async" />
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-6 xl:gap-8 2xl:gap-10 text-base">
+      {navigationLinks.map(link => (
+        <a href={link.href} class="transition-colors">
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <button
+      id="menuButton"
+      class="lg:hidden"
+      aria-label="Menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="text-white h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div
+    id="mobile-menu"
+    class="mobile-menu-transparent lg:hidden fixed inset-x-0 top-[83px] h-screen -translate-x-full transition-all duration-300"
+  >
+    <nav class="container mx-auto px-6 py-8 flex flex-col gap-6">
+      {navigationLinks.map(link => (
+        <a href={link.href} class="mobile-menu-link text-xl py-3 border-b transition-colors">
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header-transparent {
+    background: transparent;
+
+    nav a:not(.bg-primary) {
+      color: white;
+      &:hover { color: #60a5fa; }
+    }
+
+    #menuButton svg { color: white; }
+
+    /* Show regular logo, hide dark logo */
+    .logo-regular { display: block; }
+    .logo-dark { display: none; }
+  }
+
+  .header-scrolled {
+    background: linear-gradient(hsl(202 50% 80% ), hsl(0 0% 100% / 0.8));
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    nav a:not(.bg-primary) {
+      color: #374151;
+      &:hover { color: #004B85; }
+    }
+
+    #menuButton svg { color: #374151; }
+
+    /* Show dark logo, hide regular logo */
+    .logo-regular { display: none; }
+    .logo-dark { display: block; }
+  }
+
+  /* Mobile menu states */
+  .mobile-menu-transparent {
+    background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 36.34%, #01BBD6 42.1%, #004B85 76.95%, hsla(206, 100%, 19%, .93) 100%);
+
+
+    .mobile-menu-link {
+      color: white;
+      border-color: rgba(96, 165, 250, 0.3);
+      &:hover { color: #60a5fa; }
+    }
+
+    .mobile-menu-button {
+      background: white;
+      color: #004B85;
+      &:hover { background: #f0f9ff; }
+    }
+  }
+
+  .mobile-menu-scrolled {
+    background: linear-gradient(0deg, hsl(202 50% 80% ), hsl(0 0% 100% / 0.97));
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    .mobile-menu-link {
+      color: #374151;
+      border-color: rgba(55, 65, 81, 0.2);
+      &:hover { color: #004B85; }
+    }
+
+    .mobile-menu-button {
+      background: #004B85;
+      color: white;
+      &:hover { background: #003761; }
+    }
+  }
+
+  /* Header with primary background when mobile nav is open and not scrolled */
+  .header-mobile-open {
+    @media (width < 1024px) {
+
+      background: hsla(206, 100%, 19%, .93);
+    }
+
+
+    nav a:not(.bg-primary) {
+      color: white;
+      &:hover { color: #60a5fa; }
+    }
+
+    #menuButton svg { color: white; }
+
+    /* Show regular logo, hide dark logo */
+    .logo-regular { display: block; }
+    .logo-dark { display: none; }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuButton = document.getElementById('menuButton');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const header = document.querySelector('header');
+
+    if (menuButton && mobileMenu && header) {
+      // Function to open menu
+      const openMenu = () => {
+        mobileMenu.classList.remove('-translate-x-full');
+        mobileMenu.classList.add('translate-x-0');
+        document.body.style.overflow = 'hidden';
+        menuButton.setAttribute('aria-expanded', 'true');
+
+        // Add primary background if not scrolled
+        if (window.scrollY <= 50) {
+          header.classList.add('header-mobile-open');
+        }
+
+        // Change to close icon
+        menuButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        `;
+      };
+
+      // Function to close menu
+      const closeMenu = () => {
+        mobileMenu.classList.add('-translate-x-full');
+        mobileMenu.classList.remove('translate-x-0');
+        document.body.style.overflow = '';
+        menuButton.setAttribute('aria-expanded', 'false');
+
+        // Remove primary background class
+        header.classList.remove('header-mobile-open');
+
+        // Change back to hamburger icon
+        menuButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        `;
+      };
+
+      // Toggle menu on button click
+      menuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      // Close menu when clicking on navigation links
+      const mobileNavLinks = mobileMenu.querySelectorAll('a');
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          closeMenu();
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target instanceof Node &&
+            !header.contains(target) &&
+            !mobileMenu.classList.contains('translate-x-0')) {
+          closeMenu();
+        }
+      });
+
+      // Close menu on escape key
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !mobileMenu.classList.contains('translate-x-full')) {
+          closeMenu();
+        }
+      });
+
+      // Close menu on window resize to desktop size
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768 && !mobileMenu.classList.contains('translate-x-0')) {
+          closeMenu();
+        }
+      });
+
+      // Handle header scroll effect
+      const handleScroll = () => {
+        if (window.scrollY > 50) {
+          header.classList.remove('header-transparent', 'header-mobile-open');
+          header.classList.add('header-scrolled');
+          mobileMenu.classList.remove('mobile-menu-transparent');
+          mobileMenu.classList.add('mobile-menu-scrolled');
+        } else {
+          header.classList.remove('header-scrolled');
+          header.classList.add('header-transparent');
+          mobileMenu.classList.remove('mobile-menu-scrolled');
+          mobileMenu.classList.add('mobile-menu-transparent');
+
+          // Re-add mobile-open class if mobile menu is open and not scrolled
+          if (menuButton.getAttribute('aria-expanded') === 'true') {
+            header.classList.add('header-mobile-open');
+          }
+        }
+      };
+
+      // Add scroll event listener
+      window.addEventListener('scroll', handleScroll);
+
+      // Initial check in case page is already scrolled
+      handleScroll();
+    }
+  });
+</script>
