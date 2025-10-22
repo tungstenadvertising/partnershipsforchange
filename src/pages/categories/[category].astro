@@ -1,0 +1,98 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCategoryById, getProjectsByCategory } from '../../utils/projectUtils';
+
+export async function getStaticPaths() {
+  const categories = [
+    'humanitarian',
+    'environmental',
+    'refugees',
+    'documentary',
+    'cultural',
+    'media'
+  ];
+
+  return categories.map(category => ({
+    params: { category }
+  }));
+}
+
+const { category } = Astro.params;
+const categoryData = getCategoryById(category!);
+const categoryProjects = getProjectsByCategory(category!);
+
+if (!categoryData) {
+  throw new Error('Category not found');
+}
+---
+
+<Layout title={`${categoryData.name} - Partnerships For Change`}>
+  <section class="category-page py-20">
+    <div class="container mx-auto px-6">
+      <!-- Category Header -->
+      <div class="category-header text-center mb-16">
+        <div
+          class="category-icon w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-white text-4xl"
+          style={`background-color: ${categoryData.color}`}
+        >
+          {categoryData.icon}
+        </div>
+        <h1 class="text-5xl font-bold text-gray-800 mb-4">{categoryData.name}</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">{categoryData.description}</p>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {categoryProjects.map(project => (
+          <div class="project-card bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">{project.title}</h3>
+            <p class="text-gray-600 mb-6 leading-relaxed">{project.description}</p>
+            <div class="flex gap-3">
+              <a
+                href={project.learnMoreUrl}
+                class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-center hover:bg-gray-200 transition-colors"
+              >
+                Learn more
+              </a>
+              <a
+                href={project.donateUrl}
+                class="flex-1 px-4 py-2 text-white rounded-lg text-center hover:opacity-90 transition-opacity"
+                style={`background-color: ${categoryData.color}`}
+              >
+                Donate
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Back to Home -->
+      <div class="text-center mt-16">
+        <a
+          href="/"
+          class="inline-flex items-center px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .category-page {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+  }
+
+  .project-card {
+    transition: all 0.3s ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-5px);
+  }
+</style>

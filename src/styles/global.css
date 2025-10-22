@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: hsla(206, 100%, 26%, 1); /* Blue-800 */
+    --color-secondary: hsla(188, 99%, 42%, 1); /* aqua */
+    --color-accent: hsla(154, 99%, 42%, 1);
+    --color-green: hsla(109, 36%, 51%, 1); /* Green-500 */
+    --color-pink: hsla(341, 69%, 47%, 1);
+
+}
+
+body {
+    font-family: 'Arsenal', sans-serif;
+}
