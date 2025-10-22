@@ -4,42 +4,42 @@
       "id": "humanitarian",
       "name": "Humanitarian",
       "color": "#EC7225",
-      "icon": "/src/images/category-icon-humanitarian.png",
+      "icon": "/images/category-icon-humanitarian.png",
       "description": "Supporting vulnerable communities and emergency relief efforts"
     },
     {
       "id": "environmental",
       "name": "Environmental",
       "color": "#008B72",
-      "icon": "/src/images/category-icon-environmental.png",
+      "icon": "/images/category-icon-environmental.png",
       "description": "Protecting our planet and promoting sustainable practices"
     },
     {
       "id": "refugees",
       "name": "Support for Refugees",
       "color": "#E3477D",
-      "icon": "/src/images/category-icon-refugees.png",
+      "icon": "/images/category-icon-refugees.png",
       "description": "Providing support and resources for displaced communities"
     },
     {
       "id": "documentary",
       "name": "Documentary",
       "color": "#95427A",
-      "icon": "/src/images/category-icon-documentary.png",
+      "icon": "/images/category-icon-documentary.png",
       "description": "Telling important stories through film and media"
     },
     {
       "id": "cultural",
       "name": "Cultural Preservation",
       "color": "#E67E22",
-      "icon": "/src/images/category-icon-documentary.png",
+      "icon": "/images/category-icon-documentary.png",
       "description": "Preserving and celebrating cultural heritage"
     },
     {
       "id": "media",
       "name": "Media",
       "color": "#1DBDD4",
-      "icon": "/src/images/category-icon-media.png",
+      "icon": "/images/category-icon-media.png",
       "description": "Creating awareness through media and communication"
     }
   ],

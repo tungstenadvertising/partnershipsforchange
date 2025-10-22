@@ -1,0 +1,1 @@
+import{g as o}from"./index.DKtf60Sy.js";import{S as e}from"./ScrollTrigger.BWsqEc1I.js";o.registerPlugin(e);document.addEventListener("DOMContentLoaded",()=>{o.fromTo(".about-image",{opacity:0,y:30},{opacity:1,y:0,duration:1.2,ease:"power1.out",scrollTrigger:{trigger:".about-image",start:"top 80%",end:"bottom 20%",toggleActions:"play none none reverse"}})});

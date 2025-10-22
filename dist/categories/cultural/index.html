@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Creating sustainable impact through community partnerships worldwide"><title>Cultural Preservation - Partnerships For Change</title><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Arsenal:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"><style>.category-page[data-astro-cid-2pzlju63]{background:linear-gradient(135deg,#f8fafc,#e2e8f0);min-height:100vh}.project-card[data-astro-cid-2pzlju63]{transition:all .3s ease}.project-card[data-astro-cid-2pzlju63]:hover{transform:translateY(-5px)}
+</style>
+<link rel="stylesheet" href="/_astro/_category_.D875P7UK.css"></head> <body class="min-h-screen flex flex-col"> <header class="header-transparent fixed w-full z-50 transition-all duration-300" data-astro-cid-3ef6ksr2> <div class="max-w-7xl  mx-auto px-4 py-3 flex items-center justify-between" data-astro-cid-3ef6ksr2> <a href="/" class="flex items-center gap-2" data-astro-cid-3ef6ksr2> <img src="/_astro/pfc-logo.BxhbUmWc.png" alt="PFC Logo" class="max-w-48 logo-regular" width="180" height="76" loading="eager" fetchpriority="high" decoding="async" data-astro-cid-3ef6ksr2> <img src="/_astro/pfc-logo-dark.DzVJxc5G.png" alt="PFC Logo" class="max-w-48 logo-dark" width="180" height="76" loading="eager" fetchpriority="high" decoding="async" data-astro-cid-3ef6ksr2> </a> <nav class="hidden lg:flex items-center gap-6 xl:gap-8 2xl:gap-10 text-base" data-astro-cid-3ef6ksr2> <a href="/" class="transition-colors" data-astro-cid-3ef6ksr2> Home </a><a href="/about" class="transition-colors" data-astro-cid-3ef6ksr2> About Us </a><a href="/about-you" class="transition-colors" data-astro-cid-3ef6ksr2> About You </a><a href="/our-project" class="transition-colors" data-astro-cid-3ef6ksr2> Our Project </a><a href="/get-involved" class="transition-colors" data-astro-cid-3ef6ksr2> Get Involved </a><a href="/resources" class="transition-colors" data-astro-cid-3ef6ksr2> Resources </a><a href="/contact" class="transition-colors" data-astro-cid-3ef6ksr2> Contact Us </a><a href="/donor-portal" class="transition-colors" data-astro-cid-3ef6ksr2> Donor and Partner Portal </a> </nav> <button id="menuButton" class="lg:hidden" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-3ef6ksr2> <svg xmlns="http://www.w3.org/2000/svg" class="text-white h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" data-astro-cid-3ef6ksr2> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" data-astro-cid-3ef6ksr2></path> </svg> </button> </div> <!-- Mobile menu --> <div id="mobile-menu" class="mobile-menu-transparent lg:hidden fixed inset-x-0 top-[83px] h-screen -translate-x-full transition-all duration-300" data-astro-cid-3ef6ksr2> <nav class="container mx-auto px-6 py-8 flex flex-col gap-6" data-astro-cid-3ef6ksr2> <a href="/" class="mobile-menu-link text-xl py-3 border-b transition-colors" data-astro-cid-3ef6ksr2> Home </a><a href="/about" class="mobile-menu-link text-xl py-3 border-b transition-colors" data-astro-cid-3ef6ksr2> About Us </a><a href="/about-you" class="mobile-menu-link text-xl py-3 border-b transition-colors" data-astro-cid-3ef6ksr2> About You </a><a href="/our-project" class="mobile-menu-link text-xl py-3 border-b transition-colors" data-astro-cid-3ef6ksr2> Our Project </a><a href="/get-involved" class="mobile-menu-link text-xl py-3 border-b transition-colors" data-astro-cid-3ef6ksr2> Get Involved </a><a href="/resources" class="mobile-menu-link text-xl py-3 border-b transition-colors" data-astro-cid-3ef6ksr2> Resources </a><a href="/contact" class="mobile-menu-link text-xl py-3 border-b transition-colors" data-astro-cid-3ef6ksr2> Contact Us </a><a href="/donor-portal" class="mobile-menu-link text-xl py-3 border-b transition-colors" data-astro-cid-3ef6ksr2> Donor and Partner Portal </a> </nav> </div> </header>  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuButton = document.getElementById('menuButton');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const header = document.querySelector('header');
+
+    if (menuButton && mobileMenu && header) {
+      // Function to open menu
+      const openMenu = () => {
+        mobileMenu.classList.remove('-translate-x-full');
+        mobileMenu.classList.add('translate-x-0');
+        document.body.style.overflow = 'hidden';
+        menuButton.setAttribute('aria-expanded', 'true');
+
+        // Add primary background if not scrolled
+        if (window.scrollY <= 50) {
+          header.classList.add('header-mobile-open');
+        }
+
+        // Change to close icon
+        menuButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        `;
+      };
+
+      // Function to close menu
+      const closeMenu = () => {
+        mobileMenu.classList.add('-translate-x-full');
+        mobileMenu.classList.remove('translate-x-0');
+        document.body.style.overflow = '';
+        menuButton.setAttribute('aria-expanded', 'false');
+
+        // Remove primary background class
+        header.classList.remove('header-mobile-open');
+
+        // Change back to hamburger icon
+        menuButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        `;
+      };
+
+      // Toggle menu on button click
+      menuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      // Close menu when clicking on navigation links
+      const mobileNavLinks = mobileMenu.querySelectorAll('a');
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          closeMenu();
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target instanceof Node &&
+            !header.contains(target) &&
+            !mobileMenu.classList.contains('translate-x-0')) {
+          closeMenu();
+        }
+      });
+
+      // Close menu on escape key
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !mobileMenu.classList.contains('translate-x-full')) {
+          closeMenu();
+        }
+      });
+
+      // Close menu on window resize to desktop size
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768 && !mobileMenu.classList.contains('translate-x-0')) {
+          closeMenu();
+        }
+      });
+
+      // Handle header scroll effect
+      const handleScroll = () => {
+        if (window.scrollY > 50) {
+          header.classList.remove('header-transparent', 'header-mobile-open');
+          header.classList.add('header-scrolled');
+          mobileMenu.classList.remove('mobile-menu-transparent');
+          mobileMenu.classList.add('mobile-menu-scrolled');
+        } else {
+          header.classList.remove('header-scrolled');
+          header.classList.add('header-transparent');
+          mobileMenu.classList.remove('mobile-menu-scrolled');
+          mobileMenu.classList.add('mobile-menu-transparent');
+
+          // Re-add mobile-open class if mobile menu is open and not scrolled
+          if (menuButton.getAttribute('aria-expanded') === 'true') {
+            header.classList.add('header-mobile-open');
+          }
+        }
+      };
+
+      // Add scroll event listener
+      window.addEventListener('scroll', handleScroll);
+
+      // Initial check in case page is already scrolled
+      handleScroll();
+    }
+  });
+</script> <main class="flex-grow">  <section class="category-page py-20" data-astro-cid-2pzlju63> <div class="container mx-auto px-6" data-astro-cid-2pzlju63> <!-- Category Header --> <div class="category-header text-center mb-16" data-astro-cid-2pzlju63> <div class="category-icon w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-white text-4xl" style="background-color: #E67E22" data-astro-cid-2pzlju63> /images/category-icon-documentary.png </div> <h1 class="text-5xl font-bold text-gray-800 mb-4" data-astro-cid-2pzlju63>Cultural Preservation</h1> <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-astro-cid-2pzlju63>Preserving and celebrating cultural heritage</p> </div> <!-- Projects Grid --> <div class="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-astro-cid-2pzlju63> <div class="project-card bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow" data-astro-cid-2pzlju63> <h3 class="text-xl font-bold text-gray-800 mb-4" data-astro-cid-2pzlju63>Preserving Indigenous Knowledge</h3> <p class="text-gray-600 mb-6 leading-relaxed" data-astro-cid-2pzlju63>Documenting and preserving traditional knowledge systems, languages, and cultural practices of indigenous communities around the world.</p> <div class="flex gap-3" data-astro-cid-2pzlju63> <a href="/projects/indigenous-culture" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-center hover:bg-gray-200 transition-colors" data-astro-cid-2pzlju63>
+Learn more
+</a> <a href="/donate" class="flex-1 px-4 py-2 text-white rounded-lg text-center hover:opacity-90 transition-opacity" style="background-color: #E67E22" data-astro-cid-2pzlju63>
+Donate
+</a> </div> </div><div class="project-card bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow" data-astro-cid-2pzlju63> <h3 class="text-xl font-bold text-gray-800 mb-4" data-astro-cid-2pzlju63>Indigenous Language Preservation</h3> <p class="text-gray-600 mb-6 leading-relaxed" data-astro-cid-2pzlju63>Recording and documenting endangered indigenous languages, creating educational materials to ensure their survival for future generations.</p> <div class="flex gap-3" data-astro-cid-2pzlju63> <a href="/projects/indigenous-languages" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-center hover:bg-gray-200 transition-colors" data-astro-cid-2pzlju63>
+Learn more
+</a> <a href="/donate" class="flex-1 px-4 py-2 text-white rounded-lg text-center hover:opacity-90 transition-opacity" style="background-color: #E67E22" data-astro-cid-2pzlju63>
+Donate
+</a> </div> </div> </div> <!-- Back to Home --> <div class="text-center mt-16" data-astro-cid-2pzlju63> <a href="/" class="inline-flex items-center px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors" data-astro-cid-2pzlju63> <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-astro-cid-2pzlju63> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" data-astro-cid-2pzlju63></path> </svg>
+Back to Home
+</a> </div> </div> </section>  </main> <footer class="text-white relative z-10 pt-48"> <div class="relative z-10 container mx-auto px-4 py-16"> <!-- Logo Section --> <div class="flex flex-col items-center mb-12"> <img src="/_astro/pfc-logo-vertical.BbMMpBf3.png" alt="PFC Logo" class="max-w-48 mb-4" width="138" height="180" loading="lazy" fetchpriority="low" decoding="async"> </div> <!-- Navigation Links --> <nav class="flex flex-col lg:flex-row items-center justify-center gap-6 md:gap-8"> <a href="/" class="text-white hover:text-blue-200 transition-colors duration-200 text-center"> Home </a><a href="/about" class="text-white hover:text-blue-200 transition-colors duration-200 text-center"> About Us </a><a href="/about-you" class="text-white hover:text-blue-200 transition-colors duration-200 text-center"> About You </a><a href="/our-project" class="text-white hover:text-blue-200 transition-colors duration-200 text-center"> Our Project </a><a href="/get-involved" class="text-white hover:text-blue-200 transition-colors duration-200 text-center"> Get Involved </a><a href="/resources" class="text-white hover:text-blue-200 transition-colors duration-200 text-center"> Resources </a><a href="/contact" class="text-white hover:text-blue-200 transition-colors duration-200 text-center"> Contact Us </a><a href="/donor-portal" class="text-white hover:text-blue-200 transition-colors duration-200 text-center"> Donor and Partner Portal </a> </nav> </div> <!-- Background gradient --> <div class="absolute w-full h-full inset-0 z-0" style="background: linear-gradient(180deg, hsl(188, 100%, 100%), hsla(188 73% 64%), #004B85 76.95%, #003761 100%);"></div> </footer> </body></html> 
