@@ -267,7 +267,7 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
           top: y,
           rotation: finalRotation,
           duration: 1.2,
-          ease: "power2.out",
+          ease: "power1.out",
           transformOrigin: "50% 50%"
         });
 
@@ -284,7 +284,7 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
         gsap.to(globeElement, {
           rotation: globeRotation,
           duration: 1.2,
-          ease: "power2.out"
+          ease: "power1.out"
         });
       }
     }
