@@ -117,7 +117,7 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
 
           <!-- Navigation Button -->
           <button
-            class="nav-button absolute -translate-y-1/2 size-16 bg-white/50 backdrop-blur-[5px] rounded-full flex items-center justify-center hover:bg-white/70 transition-colors z-50 border-white border cursor-pointer"
+            class="nav-button absolute -translate-y-1/2 size-16 bg-white/50 rounded-full flex items-center justify-center hover:bg-white/70 transition-colors z-50 border-white border cursor-pointer"
             id="btn-next-project"
           >
           <svg class="size-7 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,14 +153,20 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
     }
   }
   .carousel-fog-gradient {
-    height: 33%;
     position: absolute;
-    inset: 0;
-    top: 50%;
-    height: 50%;
+    bottom: 0;
+    inset-inline: 0;
+    top: auto;
+    height: 57%;
     background: linear-gradient(180deg, hsla(0 100% 100% / 0), hsl(203, 100%, 75%) 30%, #fff);
     scale: 1 1;
     z-index: 29;
+    @media (width >= 640px) {
+      height: 53%;
+    }
+    @media (width >= 1024px) {
+      height: 46%;
+    }
   }
 
 
@@ -218,15 +224,32 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
     height: 75px;
     /* filter: drop-shadow(0 4px 10px hsl(0, 0%, 0%, 0.8)); */
     box-shadow: 0 3px 10px hsl(0, 0%, 0%, 0.4);
-    right: 15%;
-    top:15%;
+    backdrop-filter: blur(10px);
+    right: 3%;
+    top:3%;
+    @media (width >= 420px) {
+      top: 5%;
+      right: 5%;
+    }
+    @media (width >= 480px) {
+      top: 12%;
+      right: 12%;
+    }
     @media (width >= 640px) {
-      top: 25%;
-      right: 25%;
+      top: 15%;
+      right: 15%;
     }
     @media (width >= 768px) {
-      top: 35%;
-      right: 35%;
+      top: 7%;
+      right: 15%;
+    }
+    @media (width >= 1024px) {
+      top:15%;
+      right:15%;
+    }
+    @media (width >= 1280px) {
+      top:17%;
+      right:25%;
     }
   }
 </style>
@@ -386,6 +409,7 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
             gsap.to(projectTitle, {
               color: currentCategory?.color || '#666',
               duration: 0.3,
+              stagger: 0.1,
               ease: "power2.out"
             });
 
@@ -395,7 +419,8 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
               x: 0,
               filter: "blur(0px)",
               duration: 0.5,
-              ease: "power2.out",
+              stagger: 0.1,
+              ease: "power2.inOut",
               delay: 0.1
             });
           }
