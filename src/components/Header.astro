@@ -13,11 +13,11 @@ const navigationLinks = [
   { href: "/donor-portal", label: "Donor and Partner Portal", isButton: true }
 ];
 ---
-<header class="header-transparent fixed w-full z-50 transition-all duration-300">
-  <div class="max-w-7xl  mx-auto px-4 py-3 flex items-center justify-between">
+<header class="header-transparent h-[80px] sm:h-[100px] flex fixed w-full z-50">
+  <div class="max-w-7xl w-full mx-auto px-4 py-3 flex items-center justify-between">
     <a href="/" class="flex items-center gap-2">
-      <img src={Logo.src} alt="PFC Logo" class="max-w-48 logo-regular" width="180" height="76" loading="eager" fetchpriority="high" decoding="async" />
-      <img src={LogoDark.src} alt="PFC Logo" class="max-w-48 logo-dark" width="180" height="76" loading="eager" fetchpriority="high" decoding="async" />
+      <img src={Logo.src} alt="PFC Logo" class="w-36 sm:w-48  logo-regular" width="180" height="76" loading="eager" fetchpriority="high" decoding="async" />
+      <img src={LogoDark.src} alt="PFC Logo" class="w-36 sm:w-48 logo-dark" width="180" height="76" loading="eager" fetchpriority="high" decoding="async" />
     </a>
 
     <nav class="hidden lg:flex items-center gap-6 xl:gap-8 2xl:gap-10 text-base">
@@ -30,12 +30,12 @@ const navigationLinks = [
 
     <button
       id="menuButton"
-      class="lg:hidden"
+      class="lg:hidden w-[50px] h-[50px] flex items-center justify-center"
       aria-label="Menu"
       aria-expanded="false"
       aria-controls="mobile-menu"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="text-white h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="text-white h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
     </button>
@@ -44,11 +44,11 @@ const navigationLinks = [
   <!-- Mobile menu -->
   <div
     id="mobile-menu"
-    class="mobile-menu-transparent lg:hidden fixed inset-x-0 top-[83px] h-screen -translate-x-full transition-all duration-300"
+    class="lg:hidden fixed inset-x-0 top-[80px] sm:top-[100px] h-screen opacity-0 pointer-events-none"
   >
     <nav class="container mx-auto px-6 py-8 flex flex-col gap-6">
-      {navigationLinks.map(link => (
-        <a href={link.href} class="mobile-menu-link text-xl py-3 border-b transition-colors">
+      {navigationLinks.map((link, index) => (
+        <a href={link.href} class="mobile-menu-link text-xl py-3 border-b" data-menu-item={index}>
           {link.label}
         </a>
       ))}
@@ -57,9 +57,18 @@ const navigationLinks = [
 </header>
 
 <style>
+  /* Header base styles */
+  header {
+    transition: all 0.5s ease;
+  }
+  #mobile-menu {
+    transition: all 0.5s ease;
+
+  }
+
+  /* Header transparent state (default) */
   .header-transparent {
     background: transparent;
-
     nav a:not(.bg-primary) {
       color: white;
       &:hover { color: #60a5fa; }
@@ -70,12 +79,34 @@ const navigationLinks = [
     /* Show regular logo, hide dark logo */
     .logo-regular { display: block; }
     .logo-dark { display: none; }
+
+    /* Mobile menu when header is transparent */
+    &:has(#mobile-menu.mobile-menu-open) {
+      @media (width < 1024px) {
+        background: hsla(206, 100%, 19%, .93);
+        backdrop-filter: blur(10px);
+      }
+    }
+
+    /* Mobile menu content when transparent */
+    #mobile-menu.mobile-menu-open {
+      background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 36.34%, #01BBD6 42.1%, #004B85 76.95%, hsl(206 100% 19% / .93) 100%);
+      backdrop-filter: blur(10px);
+      opacity: 1;
+      pointer-events: auto;
+
+      .mobile-menu-link {
+        color: white;
+        border-color: rgba(96, 165, 250, 0.3);
+        &:hover { color: #60a5fa; }
+      }
+    }
   }
 
+  /* Header scrolled state */
   .header-scrolled {
-    background: linear-gradient(hsl(202 50% 80% ), hsl(0 0% 100% / 0.8));
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(10px);
+    background: linear-gradient(hsl(202 50% 80%), hsl(0 0% 100% / .5));
+    backdrop-filter: blur(10px);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
     nav a:not(.bg-primary) {
@@ -88,108 +119,113 @@ const navigationLinks = [
     /* Show dark logo, hide regular logo */
     .logo-regular { display: none; }
     .logo-dark { display: block; }
-  }
 
-  /* Mobile menu states */
-  .mobile-menu-transparent {
-    background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 36.34%, #01BBD6 42.1%, #004B85 76.95%, hsla(206, 100%, 19%, .93) 100%);
-
-
-    .mobile-menu-link {
-      color: white;
-      border-color: rgba(96, 165, 250, 0.3);
-      &:hover { color: #60a5fa; }
+    /* Mobile menu when header is scrolled */
+    &:has(#mobile-menu.mobile-menu-open) {
+      @media (width < 1024px) {
+        background: linear-gradient(hsl(202 50% 80%), hsl(0 0% 100%));
+        backdrop-filter: blur(10px);
+      }
     }
 
-    .mobile-menu-button {
-      background: white;
-      color: #004B85;
-      &:hover { background: #f0f9ff; }
-    }
-  }
+    /* Mobile menu content when scrolled */
+    #mobile-menu.mobile-menu-open {
+      background-image: linear-gradient(0deg, hsl(202 50% 80%), hsl(0 0% 100%));
+      backdrop-filter: blur(10px);
+      opacity: 1;
+      pointer-events: auto;
 
-  .mobile-menu-scrolled {
-    background: linear-gradient(0deg, hsl(202 50% 80% ), hsl(0 0% 100% / 0.97));
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-
-    .mobile-menu-link {
-      color: #374151;
-      border-color: rgba(55, 65, 81, 0.2);
-      &:hover { color: #004B85; }
-    }
-
-    .mobile-menu-button {
-      background: #004B85;
-      color: white;
-      &:hover { background: #003761; }
+      .mobile-menu-link {
+        color: #374151;
+        border-color: rgba(55, 65, 81, 0.2);
+        &:hover { color: #004B85; }
+      }
     }
   }
 
-  /* Header with primary background when mobile nav is open and not scrolled */
-  .header-mobile-open {
-    @media (width < 1024px) {
-
-      background: hsla(206, 100%, 19%, .93);
-    }
 
 
-    nav a:not(.bg-primary) {
-      color: white;
-      &:hover { color: #60a5fa; }
-    }
 
-    #menuButton svg { color: white; }
 
-    /* Show regular logo, hide dark logo */
-    .logo-regular { display: block; }
-    .logo-dark { display: none; }
-  }
+
 </style>
 
-<script is:inline>
+<script>
+  import { gsap } from 'gsap';
+
   document.addEventListener('DOMContentLoaded', () => {
     const menuButton = document.getElementById('menuButton');
     const mobileMenu = document.getElementById('mobile-menu');
     const header = document.querySelector('header');
+    const menuItems = mobileMenu?.querySelectorAll('[data-menu-item]');
 
-    if (menuButton && mobileMenu && header) {
-      // Function to open menu
+    if (menuButton && mobileMenu && header && menuItems) {
+      // Function to open menu with GSAP animations
       const openMenu = () => {
-        mobileMenu.classList.remove('-translate-x-full');
-        mobileMenu.classList.add('translate-x-0');
+        // Enable pointer events and show menu
+        mobileMenu.classList.remove('pointer-events-none');
+        mobileMenu.classList.add('pointer-events-auto');
+
+        // Animate menu items with stagger
+        gsap.fromTo(menuItems,
+          {
+            opacity: 0,
+            x: -10
+          },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out",
+          }
+        );
+
         document.body.style.overflow = 'hidden';
         menuButton.setAttribute('aria-expanded', 'true');
 
-        // Add primary background if not scrolled
-        if (window.scrollY <= 50) {
-          header.classList.add('header-mobile-open');
-        }
+        // Add mobile-menu-open class to mobile menu
+        mobileMenu.classList.add('mobile-menu-open');
 
         // Change to close icon
         menuButton.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         `;
       };
 
-      // Function to close menu
+      // Function to close menu with GSAP animations
       const closeMenu = () => {
-        mobileMenu.classList.add('-translate-x-full');
-        mobileMenu.classList.remove('translate-x-0');
-        document.body.style.overflow = '';
-        menuButton.setAttribute('aria-expanded', 'false');
+        // Animate menu items out first
+        gsap.to(menuItems, {
+          opacity: 0,
+          x: 0,
+          duration: 0.15,
+          stagger: -0.03,
+          ease: "power2.out",
+          onComplete: () => {
+            // Disable pointer events and hide menu
+            mobileMenu.classList.remove('pointer-events-auto');
+            mobileMenu.classList.add('pointer-events-none');
+            document.body.style.overflow = '';
+            menuButton.setAttribute('aria-expanded', 'false');
 
-        // Remove primary background class
-        header.classList.remove('header-mobile-open');
+            mobileMenu.classList.remove('mobile-menu-open');
 
-        // Change back to hamburger icon
-        menuButton.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        `;
+             // Change back to hamburger icon
+            menuButton.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            `;
+          }
+        });
+
+
+
+
+
       };
 
       // Toggle menu on button click
@@ -216,42 +252,37 @@ const navigationLinks = [
         const target = event.target;
         if (target instanceof Node &&
             !header.contains(target) &&
-            !mobileMenu.classList.contains('translate-x-0')) {
+            mobileMenu.classList.contains('pointer-events-auto')) {
           closeMenu();
         }
       });
 
       // Close menu on escape key
       document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && !mobileMenu.classList.contains('translate-x-full')) {
+        if (event.key === 'Escape' && mobileMenu.classList.contains('pointer-events-auto')) {
           closeMenu();
         }
       });
 
       // Close menu on window resize to desktop size
       window.addEventListener('resize', () => {
-        if (window.innerWidth >= 768 && !mobileMenu.classList.contains('translate-x-0')) {
-          closeMenu();
+        if (window.innerWidth >= 1024) { // Use lg breakpoint (1024px) to match the lg:hidden class
+          mobileMenu.classList.remove('pointer-events-auto');
+          mobileMenu.classList.add('pointer-events-none');
+          mobileMenu.classList.remove('mobile-menu-open');
+          menuButton.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
         }
       });
 
-      // Handle header scroll effect
+      // Handle header scroll effect - simplified to only toggle between two states
       const handleScroll = () => {
         if (window.scrollY > 50) {
-          header.classList.remove('header-transparent', 'header-mobile-open');
+          header.classList.remove('header-transparent');
           header.classList.add('header-scrolled');
-          mobileMenu.classList.remove('mobile-menu-transparent');
-          mobileMenu.classList.add('mobile-menu-scrolled');
         } else {
           header.classList.remove('header-scrolled');
           header.classList.add('header-transparent');
-          mobileMenu.classList.remove('mobile-menu-scrolled');
-          mobileMenu.classList.add('mobile-menu-transparent');
-
-          // Re-add mobile-open class if mobile menu is open and not scrolled
-          if (menuButton.getAttribute('aria-expanded') === 'true') {
-            header.classList.add('header-mobile-open');
-          }
         }
       };
 
