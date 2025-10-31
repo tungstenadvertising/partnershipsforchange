@@ -44,11 +44,11 @@ const navigationLinks = [
   <!-- Mobile menu -->
   <div
     id="mobile-menu"
-    class="lg:hidden fixed inset-x-0 top-[80px] sm:top-[100px] h-screen opacity-0 pointer-events-none"
+    class="lg:hidden fixed inset-x-0 top-[80px] sm:top-[100px] h-screen pointer-events-none"
   >
-    <nav class="container mx-auto px-6 py-8 flex flex-col gap-6">
+    <nav class="container mx-auto py-8 flex flex-col">
       {navigationLinks.map((link, index) => (
-        <a href={link.href} class="mobile-menu-link text-xl py-3 border-b" data-menu-item={index}>
+        <a href={link.href} class="mobile-menu-link text-xl py-4 px-6" data-menu-item={index}>
           {link.label}
         </a>
       ))}
@@ -62,16 +62,15 @@ const navigationLinks = [
     transition: all 0.5s ease;
   }
   #mobile-menu {
-    transition: all 0.5s ease;
-
+    transform: translateX(-100%);
   }
 
   /* Header transparent state (default) */
   .header-transparent {
     background: transparent;
-    nav a:not(.bg-primary) {
+    nav a {
       color: white;
-      &:hover { color: #60a5fa; }
+      &:hover { color: var(--color-secondary); }
     }
 
     #menuButton svg { color: white; }
@@ -90,15 +89,20 @@ const navigationLinks = [
 
     /* Mobile menu content when transparent */
     #mobile-menu.mobile-menu-open {
-      background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 36.34%, #01BBD6 42.1%, #004B85 76.95%, hsl(206 100% 19% / .93) 100%);
+      background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 30.34%, #01BBD6 42.1%, #004B85 76.95%, hsl(206 100% 19% / .93) 100%);
       backdrop-filter: blur(10px);
-      opacity: 1;
+      transform: translateX(0);
       pointer-events: auto;
 
       .mobile-menu-link {
         color: white;
-        border-color: rgba(96, 165, 250, 0.3);
-        &:hover { color: #60a5fa; }
+        transition: color 0.3s ease, background 0.3s ease;
+        &:hover {
+          background: hsla(206, 100%, 19%, .93);
+          color: var(--color-secondary);
+
+        }
+
       }
     }
   }
@@ -132,12 +136,11 @@ const navigationLinks = [
     #mobile-menu.mobile-menu-open {
       background-image: linear-gradient(0deg, hsl(202 50% 80%), hsl(0 0% 100%));
       backdrop-filter: blur(10px);
-      opacity: 1;
+      transform: translateX(0);
       pointer-events: auto;
 
       .mobile-menu-link {
-        color: #374151;
-        border-color: rgba(55, 65, 81, 0.2);
+        color: #374151; */
         &:hover { color: #004B85; }
       }
     }
@@ -165,27 +168,40 @@ const navigationLinks = [
         // Enable pointer events and show menu
         mobileMenu.classList.remove('pointer-events-none');
         mobileMenu.classList.add('pointer-events-auto');
+        mobileMenu.classList.add('mobile-menu-open');
+
+        // Animate menu sliding in from left
+        gsap.fromTo(mobileMenu,
+          {
+            x: '-100%'
+          },
+          {
+            x: '0%',
+            duration: 0.5,
+            ease: "power1.inOut",
+          }
+        );
 
         // Animate menu items with stagger
         gsap.fromTo(menuItems,
           {
             opacity: 0,
-            x: -10
+            x: -20,
+            filter: 'blur(5px)',
           },
           {
             opacity: 1,
             x: 0,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: "power2.out",
+            filter: 'blur(0px)',
+            duration: 0.5,
+            stagger: 0.07,
+            ease: "power1.inOut",
+            delay: 0.2,
           }
         );
 
         document.body.style.overflow = 'hidden';
         menuButton.setAttribute('aria-expanded', 'true');
-
-        // Add mobile-menu-open class to mobile menu
-        mobileMenu.classList.add('mobile-menu-open');
 
         // Change to close icon
         menuButton.innerHTML = `
@@ -197,21 +213,20 @@ const navigationLinks = [
 
       // Function to close menu with GSAP animations
       const closeMenu = () => {
-        // Animate menu items out first
-        gsap.to(menuItems, {
-          opacity: 0,
-          x: 0,
-          duration: 0.15,
-          stagger: -0.03,
-          ease: "power2.out",
+        // Animate menu sliding out to left
+        gsap.to(mobileMenu, {
+          x: '-100%',
+          duration: 0.4,
+          ease: "power2.in",
           onComplete: () => {
+            // Clear GSAP inline styles so CSS can take over
+            gsap.set(mobileMenu, { clearProps: 'all' });
             // Disable pointer events and hide menu
             mobileMenu.classList.remove('pointer-events-auto');
             mobileMenu.classList.add('pointer-events-none');
+            mobileMenu.classList.remove('mobile-menu-open');
             document.body.style.overflow = '';
             menuButton.setAttribute('aria-expanded', 'false');
-
-            mobileMenu.classList.remove('mobile-menu-open');
 
              // Change back to hamburger icon
             menuButton.innerHTML = `
@@ -267,6 +282,7 @@ const navigationLinks = [
       // Close menu on window resize to desktop size
       window.addEventListener('resize', () => {
         if (window.innerWidth >= 1024) { // Use lg breakpoint (1024px) to match the lg:hidden class
+          gsap.set(mobileMenu, { clearProps: 'all' });
           mobileMenu.classList.remove('pointer-events-auto');
           mobileMenu.classList.add('pointer-events-none');
           mobileMenu.classList.remove('mobile-menu-open');
