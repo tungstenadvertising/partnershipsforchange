@@ -55,6 +55,49 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
 
       <!-- Carousel Track -->
       <div class="carousel-track absolute inset-0 grid place-items-center z-10">
+        <svg height="300" width="300" viewBox=" 0 0 20 20">
+          <filter id="pin-shape-inset-shadow">
+            <!-- Shadow offset -->
+            <feOffset
+            dx='-20'
+            dy='0'
+          />
+
+          <!-- Shadow blur -->
+          <feGaussianBlur
+            stdDeviation='20'
+            result='offset-blur'
+          />
+
+          <!-- Invert drop shadow to make an inset shadow -->
+          <feComposite
+            operator='out'
+            in='SourceGraphic'
+            in2='offset-blur'
+            result='inverse'
+          />
+
+          <!-- Cut color inside shadow -->
+          <feFlood
+            flood-color='black'
+            flood-opacity='.45'
+            result='color'
+          />
+          <feComposite
+            operator='in'
+            in='color'
+            in2='inverse'
+            result='shadow'
+          />
+
+          <!-- Placing shadow over element -->
+          <feComposite
+            operator='over'
+            in='shadow'
+            in2='SourceGraphic'
+          />
+          </filter>
+        </svg>
 
 
 
@@ -107,7 +150,11 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
                         class="w-full h-full object-contain rounded-full"
                       />
                     </div>
-                    <svg class="pin-shape w-full aspect-auto" xmlns="http://www.w3.org/2000/svg" width="164" height="290" fill="currentColor" viewBox="0 0 164 290"> <path d="m1.043 12.678 72.824 269.909c2.342 8.721 14.702 8.7 17.042-.029l72.239-271.41c2.514-9.398-9.827-15.339-15.63-7.505L134.287 21.58c-26.026 35.322-78.753 35.53-105.047.384L16.59 5.09c-5.83-7.784-18.094-1.8-15.576 7.588h.029Z"/></svg>
+                    <svg class="pin-shape w-full aspect-auto" xmlns="http://www.w3.org/2000/svg" width="164" height="290" fill="currentColor" viewBox="0 0 164 290">
+                      <g>
+                        <path d="m1.043 12.678 72.824 269.909c2.342 8.721 14.702 8.7 17.042-.029l72.239-271.41c2.514-9.398-9.827-15.339-15.63-7.505L134.287 21.58c-26.026 35.322-78.753 35.53-105.047.384L16.59 5.09c-5.83-7.784-18.094-1.8-15.576 7.588h.029Z"/>
+                      </g>
+                      </svg>
                 </div>
               );
             })}
@@ -194,6 +241,11 @@ const firstCategory = projectsData.categories.find(cat => cat.id === firstProjec
 
   .project-item.active {
     z-index: 30;
+  }
+
+  /* Apply inner shadow filter only to active pin-shape */
+  .project-item.active .pin-shape g {
+    filter: url(#pin-shape-inset-shadow);
   }
 
 
