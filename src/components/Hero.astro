@@ -38,11 +38,11 @@ const globeId = 'hero-globe-container';
         showCircles: true,             // Toggle circles on/off
         circleColor: 'aqua',        // Circle color (can be a function for different colors per continent)
         circleAltitude: 0.001,          // Height above globe surface (0 = on surface)
-        circleResolution: 3,           // Geographic binning resolution (lower = larger circles, higher = smaller/more circles)
-        circleMargin: 0.7,             // Radial margin between circles (0-1)
+        circleResolution: 3,           // Geographic binning resolution (must be integer: 0-6, lower = larger circles, higher = smaller/more circles)
+        circleMargin: 0.7,             // Radial margin between circles (0-1, can use decimals for precision like 0.65, 0.75, etc.)
 
         // GeoJSON URL for world countries/continents
-        geoJsonUrl: 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
+        geoJsonUrl: '/data/continents.geojson',
 
         // Animation settings
         autoRotate: true,              // Auto-rotate the globe
@@ -257,14 +257,20 @@ const globeId = 'hero-globe-container';
                 const geoJsonData = await response.json();
 
                 // Configure hexed polygons with circles
+                // Ensure resolution is an integer within valid range (0-6) - required by globe.gl
+                // If you need finer control, adjust the resolution integer value (0-6)
+                const resolution = Math.round(Math.max(0, Math.min(6, config.circleResolution)));
+                // Allow precise margin values with decimal precision (clamped to 0-1 range)
+                const margin = Math.max(0, Math.min(1, config.circleMargin));
+
                 globe
                     .hexPolygonsData(geoJsonData.features)
                     .hexPolygonGeoJsonGeometry('geometry')
                     .hexPolygonUseDots(true) // Render as circles instead of hexagons
                     .hexPolygonColor(() => config.circleColor)
                     .hexPolygonAltitude(() => config.circleAltitude)
-                    .hexPolygonResolution(config.circleResolution)
-                    .hexPolygonMargin(config.circleMargin);
+                    .hexPolygonResolution(resolution)
+                    .hexPolygonMargin(margin);
 
                 // Show globe after circles are configured
                 showGlobeWhenReady();
