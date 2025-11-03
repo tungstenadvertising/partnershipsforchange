@@ -1,16 +1,310 @@
 ---
-import HeroImage from "../images/hero-globe.png";
+// Globe container ID
+const globeId = 'hero-globe-container';
 ---
-<section  id="hero" class="min-h-[75vh] relative overflow-hidden z-10"  style="background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 36.34%, #01BBD6 42.1%, #004B85 76.95%, #003761 100%);">
-    <img src={HeroImage.src} alt="Hero Image" class="absolute top-1/2 -translate-y-1/2 left-1/2 max-w-xs sm:max-w-sm scale-175 object-center object-cover m-auto lg:m-0 z-0 -translate-x-1/2 lg:left-auto lg:top-2/3 lg:right-1/4 lg:translate-x-1/4 xl:translate-x-0 lg:scale-200 xl:scale-250" width="918" height="918" />
+<section id="hero" class="min-h-[75vh] relative overflow-hidden z-10" style="background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 36.34%, #01BBD6 42.1%, #004B85 76.95%, #003761 100%);">
+    <!-- Globe Container - Full width and height -->
+    <div id={globeId} class="absolute inset-0 w-full h-full z-0 opacity-0 transition-opacity duration-1000"></div>
 
-    <div class="grid place-items-center lg:justify-items-start lg:justify-start hero-bottom absolute z-0 bottom-0 inset-x-0 lg:h-full lg:max-w-5xl mx-auto lg:inset-0 w-full py-10" >
-        <h1 class=" px-4 max-w-prose lg:max-w-5xl mx-auto text-4xl sm:text-5xl font-bold text-primary text-center lg:text-left text-pretty relative z-10"><span class="text-white">35 Years</span> <br> of Partnerships <br> Driving Global <br> Change</h1>
+    <div class="grid place-items-center lg:justify-items-start lg:justify-start hero-bottom absolute z-[2] bottom-0 inset-x-0 lg:h-full lg:max-w-5xl mx-auto lg:inset-0 w-full py-10">
+        <h1 class="px-4 max-w-prose lg:max-w-5xl mx-auto text-4xl sm:text-5xl font-bold text-primary text-center lg:text-left text-pretty relative z-10">
+            <span class="text-white">35 Years</span> <br> of Partnerships <br> Driving Global <br> Change
+        </h1>
     </div>
-
 </section>
 
+<script>
+    import Globe from 'globe.gl';
+    import * as THREE from 'three';
+
+
+    // Configuration - Customize these values
+    const config = {
+        // Background color (set to null for transparent, or use a hex color)
+        backgroundColor: 'hsl(206, 100%, 26%, 0)', // null = transparent
+
+        // Globe position/viewpoint
+        cameraLat: 0,                // Camera latitude (-90 to 90, 0 = equator)
+        cameraLng: 0,                // Camera longitude (-180 to 180, 0 = prime meridian)
+        cameraAltitude: 2.2,       // Camera distance from globe (lower = closer, higher = farther)
+
+        // Globe colors
+        globeColor: 'hsl(206, 100%, 26%)',  // Base globe color
+        globeGlowColor: 'white',            // Glow/atmosphere color
+        globeGlowPower: 1,                  // Glow intensity (0-1)
+        globeGlowRadiusScale: 1.2,          // Glow size multiplier
+
+        // Hexed Polygons (Circles) configuration
+        showCircles: true,             // Toggle circles on/off
+        circleColor: 'aqua',        // Circle color (can be a function for different colors per continent)
+        circleAltitude: 0.001,          // Height above globe surface (0 = on surface)
+        circleResolution: 3,           // Geographic binning resolution (lower = larger circles, higher = smaller/more circles)
+        circleMargin: 0.7,             // Radial margin between circles (0-1)
+
+        // GeoJSON URL for world countries/continents
+        geoJsonUrl: 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
+
+        // Animation settings
+        autoRotate: true,              // Auto-rotate the globe
+        autoRotateSpeed: 8.5,          // Rotation speed
+
+        // Lighting
+        pointLightIntensity: 1.5,      // Brightness of point lights
+        ambientLightIntensity: .2,   // Ambient light brightness
+
+        // Highlight position (controls where the shiny highlight appears)
+        // Option 1: Use latitude/longitude (geographic position)
+        highlightLat: 0,                // Latitude: -90 to 90 (0 = equator, positive = north)
+        highlightLng: 0,                // Longitude: -180 to 180 (0 = prime meridian, positive = east)
+
+        // Option 2: Use direct X/Y/Z coordinates (overrides lat/lng if all set)
+        // highlightX: null,              // X position (left/right)
+        // highlightY: null,              // Y position (up/down)
+        // highlightZ: null,              // Z position (forward/back)
+
+        lightDistance: 2,              // Distance of light from globe center (affects highlight size)
+
+        // Markers configuration
+        showMarkers: true,             // Toggle markers on/off
+        markers: [
+            { lat: 40.7128, lng: -74.0060, name: 'New York' },      // New York
+            { lat: 51.5074, lng: -0.1278, name: 'London' },         // London
+            { lat: 35.6762, lng: 139.6503, name: 'Tokyo' },         // Tokyo
+            { lat: -33.8688, lng: 151.2093, name: 'Sydney' },        // Sydney
+            { lat: 19.4326, lng: -99.1332, name: 'Mexico City' },    // Mexico City
+            { lat: -22.9068, lng: -43.1729, name: 'Rio de Janeiro' }, // Rio de Janeiro
+            { lat: 28.6139, lng: 77.2090, name: 'New Delhi' },      // New Delhi
+            { lat: 1.3521, lng: 103.8198, name: 'Singapore' },       // Singapore
+            { lat: 6.5244, lng: 3.3792, name: 'Lagos' },            // Lagos, Nigeria
+            { lat: 25.2048, lng: 55.2708, name: 'Dubai' },          // Dubai
+        ],
+        markerSize: 10,              // Size of markers
+        markerAltitude: 0,          // Height above globe surface
+
+        // Arcs configuration
+        showArcs: true,                // Toggle arcs on/off
+        arcColor: '#fff',           // Arc color (cyan/aqua)
+        arcAltitude: 0.1,              // Arc altitude (how high the arc curves)
+        arcStroke: 0.2,                // Arc stroke width
+        arcDashLength: 0.8,            // Arc dash length (for animated arcs)
+        arcDashGap: 0.1,               // Arc dash gap
+        arcDashAnimateTime: 4000,      // Arc animation duration in ms
+        connectAllMarkers: true,      // If true, connect all markers; if false, connect in sequence
+    };
+
+    // Initialize globe when DOM is ready
+    async function initGlobe() {
+        const container = document.getElementById('hero-globe-container');
+        if (!container) return;
+
+        const globe = new Globe(container, {
+            waitForGlobeReady: true,
+            animateIn: false // We handle animation with CSS
+        });
+
+        // Set background
+        if (config.backgroundColor !== null) {
+            globe.backgroundColor(config.backgroundColor);
+        } else {
+            // Make renderer transparent
+            const renderer = globe.renderer();
+            if (renderer) {
+                renderer.setClearColor(0x000000, 0);
+            }
+            const scene = globe.scene();
+            if (scene) {
+                scene.background = null;
+            }
+        }
+
+        globe.showGlobe(true)
+            .globeMaterial(new THREE.MeshPhongMaterial({
+                color: config.globeColor,
+                shininess: 50
+            }))
+            .showAtmosphere(true)
+            .atmosphereColor(config.globeGlowColor)
+            .atmosphereAltitude(0.15)
+            .pointOfView({
+                lat: config.cameraLat,
+                lng: config.cameraLng,
+                altitude: config.cameraAltitude
+            }, 0);
+
+        // Apply globe offset only on desktop (>= 1024px)
+        const updateGlobeOffset = () => {
+            if (window.innerWidth >= 1024) {
+                globe.globeOffset([200, 0]);
+            } else {
+                globe.globeOffset([0, 0]); // Reset offset on mobile
+            }
+        };
+        updateGlobeOffset();
+
+        // Update offset on window resize
+        window.addEventListener('resize', updateGlobeOffset);
+
+        globe.enablePointerInteraction(false); // Disable interaction for static hero
+
+        // Get the Three.js scene and add custom lighting for glow effect
+        const scene = globe.scene();
+        if (scene) {
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0xffffff, config.ambientLightIntensity);
+            scene.add(ambientLight);
+
+            // Calculate highlight/light position
+            // Convert latitude/longitude to 3D coordinates
+            const latRad = (config.highlightLat || 0) * Math.PI / 180;
+            const lonRad = (config.highlightLng || 0) * Math.PI / 180;
+
+            // Convert spherical coordinates to Cartesian
+            const x = config.lightDistance * Math.cos(latRad) * Math.sin(lonRad);
+            const y = config.lightDistance * Math.sin(latRad);
+            const z = config.lightDistance * Math.cos(latRad) * Math.cos(lonRad);
+
+            // Add point light for glow (position determines highlight location)
+            const pointLight = new THREE.PointLight(config.globeGlowColor, config.pointLightIntensity, 100);
+            pointLight.position.set(x, y, z);
+            scene.add(pointLight);
+        }
+
+        // Function to show globe smoothly after everything is loaded
+        const showGlobeWhenReady = () => {
+            // Wait for next animation frame to ensure everything is rendered
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    container.classList.add('opacity-100');
+                });
+            });
+        };
+
+        // Generate arcs between markers
+        function generateArcs() {
+            if (!config.showArcs || config.markers.length < 2) return [];
+
+            const arcs: any[] = [];
+
+            if (config.connectAllMarkers) {
+                // Connect all markers to each other
+                for (let i = 0; i < config.markers.length; i++) {
+                    for (let j = i + 1; j < config.markers.length; j++) {
+                        arcs.push({
+                            startLat: config.markers[i].lat,
+                            startLng: config.markers[i].lng,
+                            endLat: config.markers[j].lat,
+                            endLng: config.markers[j].lng,
+                        });
+                    }
+                }
+            } else {
+                // Connect markers in sequence (creates a path through all locations)
+                for (let i = 0; i < config.markers.length - 1; i++) {
+                    arcs.push({
+                        startLat: config.markers[i].lat,
+                        startLng: config.markers[i].lng,
+                        endLat: config.markers[i + 1].lat,
+                        endLng: config.markers[i + 1].lng,
+                    });
+                }
+            }
+
+            return arcs;
+        }
+
+        // Add arcs to globe
+        if (config.showArcs) {
+            const arcs = generateArcs();
+            if (arcs.length > 0) {
+                globe
+                    .arcsData(arcs)
+                    .arcStartLat((d: any) => d.startLat)
+                    .arcStartLng((d: any) => d.startLng)
+                    .arcEndLat((d: any) => d.endLat)
+                    .arcEndLng((d: any) => d.endLng)
+                    .arcColor(() => config.arcColor)
+                    .arcAltitude((d: any) => config.arcAltitude)
+                    .arcStroke(() => config.arcStroke)
+                    .arcDashLength(() => config.arcDashLength)
+                    .arcDashGap(() => config.arcDashGap)
+                    .arcDashAnimateTime(() => config.arcDashAnimateTime);
+            }
+        }
+
+        // Add markers to globe using HTML elements
+        if (config.showMarkers && config.markers.length > 0) {
+            // Calculate marker dimensions based on config (maintaining SVG aspect ratio 63:128)
+            const markerWidth = config.markerSize;
+            const markerHeight = config.markerSize * (128 / 63); // Maintain SVG aspect ratio
+
+            globe
+                .htmlElementsData(config.markers)
+                .htmlLat((d: any) => d.lat)
+                .htmlLng((d: any) => d.lng)
+                .htmlAltitude(config.markerAltitude)
+                .htmlElement((d: any) => {
+                    const el = document.createElement('div');
+                    el.className = 'relative size-4';
+                    el.innerHTML = `<img class='' src="/globe-marker.svg" alt="${d.name || ''}" style="width: ${markerWidth}px; height: ${markerHeight}px; display: block; position: absolute; inset:0; bottom: 0; margin: auto;  scale: 2.5; transform-origin: center bottom; translate: 0 -50%;" />`;
+                    return el;
+                });
+        }
+
+        // Load GeoJSON and add hexed polygons (circles)
+        if (config.showCircles) {
+            try {
+                const response = await fetch(config.geoJsonUrl);
+                const geoJsonData = await response.json();
+
+                // Configure hexed polygons with circles
+                globe
+                    .hexPolygonsData(geoJsonData.features)
+                    .hexPolygonGeoJsonGeometry('geometry')
+                    .hexPolygonUseDots(true) // Render as circles instead of hexagons
+                    .hexPolygonColor(() => config.circleColor)
+                    .hexPolygonAltitude(() => config.circleAltitude)
+                    .hexPolygonResolution(config.circleResolution)
+                    .hexPolygonMargin(config.circleMargin);
+
+                // Show globe after circles are configured
+                showGlobeWhenReady();
+            } catch (error) {
+                console.error('Error loading GeoJSON data:', error);
+                // Show globe even if circles fail to load
+                showGlobeWhenReady();
+            }
+        } else {
+            // If circles are disabled, show globe after base setup
+            showGlobeWhenReady();
+        }
+
+        // Auto-rotate animation
+        if (config.autoRotate) {
+            let rotation = { lat: 0, lng: 0 };
+            const animate = () => {
+                rotation.lng += config.autoRotateSpeed * 0.01;
+                globe.pointOfView({ lat: rotation.lat, lng: rotation.lng, altitude: config.cameraAltitude }, 1);
+                requestAnimationFrame(animate);
+            };
+            animate();
+        }
+    }
+
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGlobe);
+    } else {
+        initGlobe();
+    }
+</script>
+
 <style>
+    #hero-globe-container {
+        width: 100%;
+        height: 100%;
+        will-change: opacity;
+    }
+
     .hero-bottom {
 
     }
@@ -21,7 +315,7 @@ import HeroImage from "../images/hero-globe.png";
         inset: 0;
         width: 100%;
         height: 100%;
-        scale: 20 1;
+        scale: 2 1.1;
         background: linear-gradient(0deg, #FFFFFF 0%, #FFFFFF 27.02%, hsl(203, 100%, 75%) 72%, transparent 100%);
         @media (width >= 1024px) {
             height: 38%;
