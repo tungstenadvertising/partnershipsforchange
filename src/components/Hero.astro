@@ -4,7 +4,7 @@ const globeId = 'hero-globe-container';
 ---
 <section id="hero" class="min-h-[75vh] relative overflow-hidden z-10" style="background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 36.34%, #01BBD6 42.1%, #004B85 76.95%, #003761 100%);">
     <!-- Globe Container - Full width and height -->
-    <div id={globeId} class="absolute inset-0 w-full h-full z-0 opacity-0 transition-opacity duration-1000"></div>
+    <div id={globeId} class="absolute inset-0 w-full h-full z-0 opacity-0 transition-opacity duration-2000 ease-in"></div>
 
     <div class="grid place-items-center lg:justify-items-start lg:justify-start hero-bottom absolute z-[2] bottom-0 inset-x-0 lg:h-full lg:max-w-5xl mx-auto lg:inset-0 w-full py-10">
         <h1 class="px-4 max-w-prose lg:max-w-5xl mx-auto text-4xl sm:text-5xl font-bold text-primary text-center lg:text-left text-pretty relative z-10">
@@ -26,7 +26,7 @@ const globeId = 'hero-globe-container';
         // Globe position/viewpoint
         cameraLat: 0,                // Camera latitude (-90 to 90, 0 = equator)
         cameraLng: 0,                // Camera longitude (-180 to 180, 0 = prime meridian)
-        cameraAltitude: 2.2,       // Camera distance from globe (lower = closer, higher = farther)
+        cameraAltitude: 2,       // Camera distance from globe (lower = closer, higher = farther)
 
         // Globe colors
         globeColor: 'hsl(206, 100%, 26%)',  // Base globe color
@@ -77,16 +77,17 @@ const globeId = 'hero-globe-container';
             { lat: 1.3521, lng: 103.8198, name: 'Singapore' },       // Singapore
             { lat: 6.5244, lng: 3.3792, name: 'Lagos' },            // Lagos, Nigeria
             { lat: 25.2048, lng: 55.2708, name: 'Dubai' },          // Dubai
+            { lat: 21.3099, lng: -157.8581, name: 'Hawaii' },      // Hawaii
         ],
         markerSize: 10,              // Size of markers
         markerAltitude: 0,          // Height above globe surface
 
         // Arcs configuration
         showArcs: true,                // Toggle arcs on/off
-        arcColor: '#fff',           // Arc color (cyan/aqua)
+        arcColor: 'rgba(180, 255, 255, .7)',             // Arc opacity (0-1)
         arcAltitude: 0.1,              // Arc altitude (how high the arc curves)
         arcStroke: 0.2,                // Arc stroke width
-        arcDashLength: 0.8,            // Arc dash length (for animated arcs)
+        arcDashLength: 1.2,            // Arc dash length (for animated arcs)
         arcDashGap: 0.1,               // Arc dash gap
         arcDashAnimateTime: 4000,      // Arc animation duration in ms
         connectAllMarkers: true,      // If true, connect all markers; if false, connect in sequence
@@ -286,7 +287,7 @@ const globeId = 'hero-globe-container';
 
         // Auto-rotate animation
         if (config.autoRotate) {
-            let rotation = { lat: 0, lng: 0 };
+            let rotation = { lat: config.cameraLat, lng: config.cameraLng };
             const animate = () => {
                 rotation.lng += config.autoRotateSpeed * 0.01;
                 globe.pointOfView({ lat: rotation.lat, lng: rotation.lng, altitude: config.cameraAltitude }, 1);
@@ -314,16 +315,18 @@ const globeId = 'hero-globe-container';
     .hero-bottom {
 
     }
-    .hero-bottom:after {
+    .hero-bottom::after {
         content: '';
         z-index: 0;
         position: absolute;
-        inset: 0;
+        inset-inline: 0;
+        top: auto;
+        bottom: 0;
         width: 100%;
         height: 100%;
         scale: 2 1.1;
-        background: linear-gradient(0deg, #FFFFFF 0%, #FFFFFF 27.02%, hsl(203, 100%, 75%) 72%, transparent 100%);
-        @media (width >= 1024px) {
+        background: linear-gradient(0deg, #FFFFFF 0%, #FFFFFF 27.02%, hsl(203, 100%, 75%) 73%, transparent 100%);
+        @media (min-width: 1024px) {
             height: 38%;
             bottom: 0;
             top: auto;
