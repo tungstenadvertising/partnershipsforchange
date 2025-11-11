@@ -15,7 +15,7 @@ import AboutImage4 from '../images/about-image-04.png';
   // Wait for DOM to be ready
   document.addEventListener('DOMContentLoaded', () => {
     // Create the animation for the about images
-    const images = document.querySelectorAll('.about-image');
+    const images = document.querySelectorAll('.about-image-circle');
     gsap.fromTo(images,
       {
         opacity: 0,
@@ -27,7 +27,7 @@ import AboutImage4 from '../images/about-image-04.png';
         y: 0,
         scale: 1,
         duration: 1,
-        ease: "power1.inOut",
+        ease: "power2.inOut",
         stagger: 0.15,
         scrollTrigger: {
           trigger: '.about-images-container',
@@ -54,7 +54,7 @@ import AboutImage4 from '../images/about-image-04.png';
             <img
               src={AboutImage4.src}
               alt="About Partnerships For Change"
-              class="about-image w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
+              class="about-image about-image-circle  w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
               loading="lazy"
               style="opacity: 0;"
             />
@@ -64,7 +64,7 @@ import AboutImage4 from '../images/about-image-04.png';
             <img
               src={AboutImage1.src}
               alt="About Partnerships For Change"
-              class="about-image w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
+              class="about-image about-image-circle  w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
               loading="lazy"
               style="opacity: 0;"
             />
@@ -74,7 +74,7 @@ import AboutImage4 from '../images/about-image-04.png';
             <img
               src={AboutImage3.src}
               alt="About Partnerships For Change"
-              class="about-image w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
+              class="about-image about-image-circle  w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
               loading="lazy"
               style="opacity: 0;"
             />
@@ -84,7 +84,7 @@ import AboutImage4 from '../images/about-image-04.png';
             <img
               src={AboutImage2.src}
               alt="About Partnerships For Change"
-              class="about-image w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
+              class="about-image about-image-circle  w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
               loading="lazy"
               style="opacity: 0;"
             />
