@@ -1,5 +1,8 @@
 ---
-import AboutImage from '../images/home-about-image.png';
+import AboutImage1 from '../images/about-image-01.png';
+import AboutImage2 from '../images/about-image-02.png';
+import AboutImage3 from '../images/about-image-03.png';
+import AboutImage4 from '../images/about-image-04.png';
 ---
 
 <script>
@@ -11,19 +14,23 @@ import AboutImage from '../images/home-about-image.png';
 
   // Wait for DOM to be ready
   document.addEventListener('DOMContentLoaded', () => {
-    // Create the animation for the about image
-    gsap.fromTo('.about-image',
+    // Create the animation for the about images
+    const images = document.querySelectorAll('.about-image');
+    gsap.fromTo(images,
       {
         opacity: 0,
-        y: 30,
+        y: 10,
+        scale: 0.8,
       },
       {
         opacity: 1,
         y: 0,
-        duration: 1.2,
-        ease: "power1.out",
+        scale: 1,
+        duration: 1,
+        ease: "power1.inOut",
+        stagger: 0.15,
         scrollTrigger: {
-          trigger: '.about-image',
+          trigger: '.about-images-container',
           start: "top 80%",
           end: "bottom 20%",
           once: true
@@ -41,15 +48,48 @@ import AboutImage from '../images/home-about-image.png';
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center ">
       <!-- Image Column -->
       <div class="order-2 lg:order-1 relative z-0">
-        <img
-          src={AboutImage.src}
-          alt="About Partnerships For Change"
-          class="about-image w-full object-cover relative z-10 max-lg:max-w-md mx-auto"
-          loading="lazy"
-          width="540"
-          height="482"
-          style="opacity: 0;"
-        />
+        <div class="about-images-container relative w-full aspect-square max-w-lg mx-auto">
+          <!-- Top-center circle -->
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 top-image">
+            <img
+              src={AboutImage4.src}
+              alt="About Partnerships For Change"
+              class="about-image w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
+              loading="lazy"
+              style="opacity: 0;"
+            />
+          </div>
+          <!-- Mid-left circle (largest) -->
+          <div class="absolute left-0 left-image">
+            <img
+              src={AboutImage1.src}
+              alt="About Partnerships For Change"
+              class="about-image w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
+              loading="lazy"
+              style="opacity: 0;"
+            />
+          </div>
+          <!-- Mid-right circle -->
+          <div class="absolute right-0 right-image">
+            <img
+              src={AboutImage3.src}
+              alt="About Partnerships For Change"
+              class="about-image w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
+              loading="lazy"
+              style="opacity: 0;"
+            />
+          </div>
+          <!-- Bottom-right circle -->
+          <div class="absolute bottom-image">
+            <img
+              src={AboutImage2.src}
+              alt="About Partnerships For Change"
+              class="about-image w-full aspect-square object-cover rounded-full border-[8px] border-white/30"
+              loading="lazy"
+              style="opacity: 0;"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- Text Column -->
@@ -91,4 +131,31 @@ import AboutImage from '../images/home-about-image.png';
     background: linear-gradient(#FFFFFF, hsla(109, 36%, 51%, 0.35) 20%,  hsla(188, 99%, 42%, 0.68) 37%, #fff 100%);
     scale: 1 4;
   }
+.about-images-container {
+  .top-image {
+    top: 0;
+    left: 50%;
+    width: 30%;
+  }
+  .left-image {
+    left: -10%;
+    top: 33%;
+    width: 70%;
+    @media (width >= 1024px) {
+      left: 0%;
+      width: 63%;
+    }
+  }
+  .right-image {
+    right: -5%;
+    top:16%;
+    width: 42%;
+  }
+  .bottom-image {
+    bottom: -17%;
+    right: -17%;
+    width: 55%;
+  }
+}
+
 </style>
