@@ -4,28 +4,28 @@
       "id": "humanitarian",
       "name": "Humanitarian",
       "color": "#EC7225",
-      "icon": "/images/category-icon-humanitarian.png",
+      "icon": "/images/category-icon-humanitarian.svg",
       "description": "Supporting vulnerable communities and emergency relief efforts"
     },
     {
       "id": "environmental",
       "name": "Environmental",
       "color": "#008B72",
-      "icon": "/images/category-icon-environmental.png",
+      "icon": "/images/category-icon-environmental.svg",
       "description": "Protecting our planet and promoting sustainable practices"
     },
     {
       "id": "refugees",
       "name": "Support for Refugees",
       "color": "#E3477D",
-      "icon": "/images/category-icon-refugees.png",
+      "icon": "/images/category-icon-refugees.svg",
       "description": "Providing support and resources for displaced communities"
     },
     {
       "id": "documentary",
       "name": "Documentary",
       "color": "#95427A",
-      "icon": "/images/category-icon-documentary.png",
+      "icon": "/images/category-icon-documentary.svg",
       "description": "Telling important stories through film and media"
     },
     {
@@ -39,7 +39,7 @@
       "id": "media",
       "name": "Media",
       "color": "#1DBDD4",
-      "icon": "/images/category-icon-media.png",
+      "icon": "/images/category-icon-media.svg",
       "description": "Creating awareness through media and communication"
     }
   ],

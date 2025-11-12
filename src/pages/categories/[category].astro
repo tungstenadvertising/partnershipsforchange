@@ -35,7 +35,11 @@ if (!categoryData) {
           class="category-icon w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-white text-4xl"
           style={`background-color: ${categoryData.color}`}
         >
-          {categoryData.icon}
+          <img
+            src={categoryData.icon}
+            alt={categoryData.name}
+            class="w-12 h-12 object-contain"
+          />
         </div>
         <h1 class="text-5xl font-bold text-gray-800 mb-4">{categoryData.name}</h1>
         <p class="text-xl text-gray-600 max-w-3xl mx-auto">{categoryData.description}</p>
