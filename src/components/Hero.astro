@@ -38,7 +38,8 @@ const globeId = 'hero-globe-container';
         showCircles: true,             // Toggle circles on/off
         circleColor: 'aqua',        // Circle color (can be a function for different colors per continent)
         circleAltitude: 0.001,          // Height above globe surface (0 = on surface)
-        circleResolution: 3,           // Geographic binning resolution (must be integer: 0-6, lower = larger circles, higher = smaller/more circles)
+        circleResolution: 4,           // Geographic binning resolution (must be integer: 0-6, lower = larger circles, higher = smaller/more circles)
+                                      // Reduced from 3 to 2 for better performance (fewer circles to render)
         circleMargin: 0.7,             // Radial margin between circles (0-1, can use decimals for precision like 0.65, 0.75, etc.)
 
         // GeoJSON URL for world countries/continents
@@ -103,15 +104,18 @@ const globeId = 'hero-globe-container';
             animateIn: false // We handle animation with CSS
         });
 
-        // Set background
+        // Set background and optimize renderer
+        const renderer = globe.renderer();
+        if (renderer) {
+            // Performance optimizations for Three.js renderer
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio for performance
+            renderer.setClearColor(0x000000, 0);
+        }
+
         if (config.backgroundColor !== null) {
             globe.backgroundColor(config.backgroundColor);
         } else {
             // Make renderer transparent
-            const renderer = globe.renderer();
-            if (renderer) {
-                renderer.setClearColor(0x000000, 0);
-            }
             const scene = globe.scene();
             if (scene) {
                 scene.background = null;
@@ -188,14 +192,37 @@ const globeId = 'hero-globe-container';
 
             if (config.connectAllMarkers) {
                 // Connect all markers to each other
+                // Limit connections for performance: only connect to nearby markers
+                const maxConnections = 5; // Limit connections per marker to reduce complexity
                 for (let i = 0; i < config.markers.length; i++) {
-                    for (let j = i + 1; j < config.markers.length; j++) {
-                        arcs.push({
-                            startLat: config.markers[i].lat,
-                            startLng: config.markers[i].lng,
-                            endLat: config.markers[j].lat,
-                            endLng: config.markers[j].lng,
-                        });
+                    // Calculate distances and only connect to closest markers
+                    const distances: Array<{index: number, distance: number}> = [];
+                    for (let j = 0; j < config.markers.length; j++) {
+                        if (i === j) continue;
+                        const lat1 = config.markers[i].lat;
+                        const lng1 = config.markers[i].lng;
+                        const lat2 = config.markers[j].lat;
+                        const lng2 = config.markers[j].lng;
+                        // Simple distance calculation (Haversine approximation)
+                        const dLat = lat2 - lat1;
+                        const dLng = lng2 - lng1;
+                        const distance = Math.sqrt(dLat * dLat + dLng * dLng);
+                        distances.push({ index: j, distance });
+                    }
+                    // Sort by distance and take closest ones
+                    distances.sort((a, b) => a.distance - b.distance);
+                    const connections = distances.slice(0, maxConnections);
+                    for (const conn of connections) {
+                        const j = conn.index;
+                        // Only add arc if not already added (i < j check)
+                        if (i < j) {
+                            arcs.push({
+                                startLat: config.markers[i].lat,
+                                startLng: config.markers[i].lng,
+                                endLat: config.markers[j].lat,
+                                endLng: config.markers[j].lng,
+                            });
+                        }
                     }
                 }
             } else {
@@ -251,7 +278,102 @@ const globeId = 'hero-globe-container';
                 });
         }
 
+        // Function to start animation - only called after all assets are loaded
+        const startAnimation = () => {
+            if (!config.autoRotate) return;
+
+            let rotation = { lat: config.cameraLat, lng: config.cameraLng };
+            let lastTime = performance.now();
+            let animationId: number | null = null;
+            let isVisible = true;
+            let isInViewport = true;
+            let frameSkip = 0; // Throttle updates - update every other frame
+
+            // Pause animation when tab is not visible
+            const handleVisibilityChange = () => {
+                isVisible = !document.hidden;
+                if (isVisible && animationId === null && isInViewport) {
+                    lastTime = performance.now();
+                    animate();
+                } else if (!isVisible && animationId !== null) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+            };
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
+            // Pause animation when not in viewport (Intersection Observer)
+            const observer = new IntersectionObserver((entries) => {
+                isInViewport = entries[0].isIntersecting;
+                if (isInViewport && isVisible && animationId === null) {
+                    lastTime = performance.now();
+                    animate();
+                } else if (!isInViewport && animationId !== null) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+            }, { threshold: 0.1 });
+
+            if (container) {
+                observer.observe(container);
+            }
+
+            const animate = () => {
+                if (!isVisible || !isInViewport) {
+                    animationId = null;
+                    return;
+                }
+
+                const currentTime = performance.now();
+                const deltaTime = currentTime - lastTime;
+                lastTime = currentTime;
+
+                // Skip frame if it's been too long since last frame (prevents large jumps)
+                // This can happen when the tab was hidden or browser was busy
+                if (deltaTime > 100) {
+                    animationId = requestAnimationFrame(animate);
+                    return;
+                }
+
+                // Throttle: Only update every other frame to reduce load
+                frameSkip++;
+                if (frameSkip < 2) {
+                    animationId = requestAnimationFrame(animate);
+                    return;
+                }
+                frameSkip = 0;
+
+                // Use delta time for smooth animation regardless of frame rate
+                // Normalize to 60fps (16.67ms per frame) for consistent speed
+                const normalizedDelta = Math.min(deltaTime / 16.67, 2); // Cap at 2x to prevent jumps
+                rotation.lng += config.autoRotateSpeed * 0.01 * normalizedDelta;
+
+                // Update point of view with transition duration of 0 for immediate update
+                // This avoids interpolation overhead that can cause performance issues
+                globe.pointOfView({ lat: rotation.lat, lng: rotation.lng, altitude: config.cameraAltitude }, 0);
+
+                animationId = requestAnimationFrame(animate);
+            };
+
+            // Start animation AFTER all assets are loaded
+            animate();
+
+            // Cleanup function (if needed for component unmount)
+            const cleanup = () => {
+                if (animationId !== null) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                observer.disconnect();
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+            };
+
+            // Store cleanup on window for potential unmount scenarios
+            (window as any).__heroGlobeCleanup = cleanup;
+        };
+
         // Load GeoJSON and add hexed polygons (circles)
+        // IMPORTANT: Wait for all assets to load BEFORE starting animation loop
         if (config.showCircles) {
             try {
                 const response = await fetch(config.geoJsonUrl);
@@ -260,10 +382,16 @@ const globeId = 'hero-globe-container';
                 // Configure hexed polygons with circles
                 // Ensure resolution is an integer within valid range (0-6) - required by globe.gl
                 // If you need finer control, adjust the resolution integer value (0-6)
-                const resolution = Math.round(Math.max(0, Math.min(6, config.circleResolution)));
+                // Reduce resolution on mobile for better performance
+                const isMobile = window.innerWidth < 1024;
+                const resolution = isMobile
+                    ? Math.max(1, Math.round(config.circleResolution) - 1) // Lower on mobile
+                    : Math.round(Math.max(0, Math.min(6, config.circleResolution)));
                 // Allow precise margin values with decimal precision (clamped to 0-1 range)
                 const margin = Math.max(0, Math.min(1, config.circleMargin));
 
+                // This is heavy processing - do it BEFORE starting animation
+                const startTime = performance.now();
                 globe
                     .hexPolygonsData(geoJsonData.features)
                     .hexPolygonGeoJsonGeometry('geometry')
@@ -273,27 +401,37 @@ const globeId = 'hero-globe-container';
                     .hexPolygonResolution(resolution)
                     .hexPolygonMargin(margin);
 
+                // Wait multiple frames to ensure geometry is fully processed
+                // globe.gl does heavy processing in setTimeout internally, so we need to wait
+                await new Promise(resolve => requestAnimationFrame(resolve));
+                await new Promise(resolve => requestAnimationFrame(resolve));
+
+                // Check processing time - if it took too long, wait extra
+                const processingTime = performance.now() - startTime;
+                if (processingTime > 500) {
+                    // Heavy processing detected, wait longer
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
                 // Show globe after circles are configured
                 showGlobeWhenReady();
+
+                // NOW start animation - all assets are loaded
+                startAnimation();
             } catch (error) {
                 console.error('Error loading GeoJSON data:', error);
                 // Show globe even if circles fail to load
                 showGlobeWhenReady();
+                // Start animation even if circles failed
+                startAnimation();
             }
         } else {
             // If circles are disabled, show globe after base setup
             showGlobeWhenReady();
-        }
-
-        // Auto-rotate animation
-        if (config.autoRotate) {
-            let rotation = { lat: config.cameraLat, lng: config.cameraLng };
-            const animate = () => {
-                rotation.lng += config.autoRotateSpeed * 0.01;
-                globe.pointOfView({ lat: rotation.lat, lng: rotation.lng, altitude: config.cameraAltitude }, 1);
-                requestAnimationFrame(animate);
-            };
-            animate();
+            // Start animation immediately since no async loading needed
+            startAnimation();
         }
     }
 
@@ -310,6 +448,16 @@ const globeId = 'hero-globe-container';
         width: 100%;
         height: 100%;
         will-change: opacity;
+        /* Performance optimizations */
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+
+    #hero-globe-container canvas {
+        /* Optimize canvas rendering */
+        will-change: transform;
+        transform: translateZ(0);
     }
 
     .hero-bottom {
