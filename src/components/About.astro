@@ -15,8 +15,8 @@ import AboutImage4 from '../images/about-image-04.png';
   // Wait for DOM to be ready
   document.addEventListener('DOMContentLoaded', () => {
     // Create the animation for the about images
-    const images = document.querySelectorAll('.about-image-circle');
-    gsap.fromTo(images,
+    const aboutCircles = document.querySelectorAll('.about-image-circle');
+    gsap.fromTo(aboutCircles,
       {
         opacity: 0,
         y: 10,
@@ -27,8 +27,11 @@ import AboutImage4 from '../images/about-image-04.png';
         y: 0,
         scale: 1,
         duration: 1,
-        ease: "power2.inOut",
-        stagger: 0.15,
+        ease: "power1.inOut",
+        stagger: {
+          amount: 0.5,
+          from: 'random'
+        },
         scrollTrigger: {
           trigger: '.about-images-container',
           start: "top 80%",
@@ -37,6 +40,36 @@ import AboutImage4 from '../images/about-image-04.png';
         }
       }
     );
+
+    // Pulse animation for all circles - border enlarges then disappears (randomized each iteration)
+    aboutCircles.forEach((circle: Element) => {
+      // Function to create a pulse with random values
+      const createPulse = () => {
+        // Generate new random values for each pulse
+        const randomDuration = 1.5 + Math.random() * 1.5; // 1-2.5 seconds
+        const randomPulseSize = 30 + Math.random() * 30; // 30-60px
+        const randomPause = 2.5 + Math.random() * 2; // 1.5-3.5 seconds
+        const randomOpacity = 0.15 + Math.random() * 0.15; // 0.1-0.15
+
+        const pulseTimeline = gsap.timeline({
+          onComplete: createPulse // Recursively create next pulse with new random values
+        });
+
+        pulseTimeline
+          .set(circle, { boxShadow: `0 0 0 0 rgba(255, 255, 255, ${randomOpacity})` })
+          .to(circle, {
+            boxShadow: `0 0 0 ${randomPulseSize}px rgba(255, 255, 255, 0)`,
+            duration: randomDuration,
+            ease: "power1.inOut"
+          })
+          .set(circle, { boxShadow: "0 0 0 0 rgba(255, 255, 255, 0)" })
+          .to({}, { duration: randomPause }); // Random pause before next pulse
+      };
+
+      // Initial delay before first pulse
+      const initialDelay = Math.random() * 2; // 0-2 seconds
+      gsap.delayedCall(initialDelay, createPulse);
+    });
   });
 </script>
 

@@ -38,9 +38,9 @@ const globeId = 'hero-globe-container';
         showCircles: true,             // Toggle circles on/off
         circleColor: 'aqua',        // Circle color (can be a function for different colors per continent)
         circleAltitude: 0.001,          // Height above globe surface (0 = on surface)
-        circleResolution: 4,           // Geographic binning resolution (must be integer: 0-6, lower = larger circles, higher = smaller/more circles)
+        circleResolution: 3,           // Geographic binning resolution (must be integer: 0-6, lower = larger circles, higher = smaller/more circles)
                                       // Reduced from 3 to 2 for better performance (fewer circles to render)
-        circleMargin: 0.7,             // Radial margin between circles (0-1, can use decimals for precision like 0.65, 0.75, etc.)
+        circleMargin: 0.6,             // Radial margin between circles (0-1, can use decimals for precision like 0.65, 0.75, etc.)
 
         // GeoJSON URL for world countries/continents
         geoJsonUrl: '/data/continents.geojson',
@@ -382,11 +382,8 @@ const globeId = 'hero-globe-container';
                 // Configure hexed polygons with circles
                 // Ensure resolution is an integer within valid range (0-6) - required by globe.gl
                 // If you need finer control, adjust the resolution integer value (0-6)
-                // Reduce resolution on mobile for better performance
-                const isMobile = window.innerWidth < 1024;
-                const resolution = isMobile
-                    ? Math.max(1, Math.round(config.circleResolution) - 1) // Lower on mobile
-                    : Math.round(Math.max(0, Math.min(6, config.circleResolution)));
+                // Use constant resolution on all screens
+                const resolution = Math.round(Math.max(0, Math.min(6, config.circleResolution)));
                 // Allow precise margin values with decimal precision (clamped to 0-1 range)
                 const margin = Math.max(0, Math.min(1, config.circleMargin));
 

@@ -1,5 +1,6 @@
 ---
 import Logo from "../images/pfc-logo-vertical.png";
+import { Image } from "astro:assets";
 
 // Navigation data - single source of truth
 const navigationLinks = [
@@ -17,7 +18,7 @@ const navigationLinks = [
   <div class="relative z-10 container mx-auto px-4 py-16">
     <!-- Logo Section -->
     <div class="flex flex-col items-center mb-12">
-      <img src={Logo.src} alt="PFC Logo" class="max-w-48 mb-4" width="138" height="180" loading="lazy" fetchpriority="low" decoding="async" />
+      <Image src={Logo} alt="PFC Logo" class="max-w-48 mb-4" width="138" height="180" loading="lazy" fetchpriority="low" decoding="async" />
     </div>
 
     <!-- Navigation Links -->
