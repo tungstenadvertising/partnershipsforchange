@@ -29,7 +29,7 @@ import AboutImage4 from '../images/about-image-04.png';
         duration: 1,
         ease: "power1.inOut",
         stagger: {
-          amount: 0.5,
+          amount: 0.8,
           from: 'random'
         },
         scrollTrigger: {
@@ -74,7 +74,7 @@ import AboutImage4 from '../images/about-image-04.png';
 </script>
 
 
-<section class="pb-6 md:pb-10 lg:pb-20 pt-10 px-4 z-0 relative" id="about">
+<section class="pb-6 md:pb-10 lg:pb-20 pt-10 px-4 z-0 relative overflow-x-hidden" id="about">
   <div class="container mx-auto max-w-6xl relative z-10">
 
 
@@ -197,20 +197,23 @@ import AboutImage4 from '../images/about-image-04.png';
     width: 55%;
   }
   .small-circle-25 {
-    width: 25px;
-    height: 25px;
+    --circle-size: clamp(10px, 1.8vw, 25px);
+    width: var(--circle-size);
+    height: var(--circle-size);
     top: 20%;
     left: 20%;
   }
   .small-circle-44 {
-    width: 44px;
-    height: 44px;
+    --circle-size: clamp(22px, 3.5vw, 44px);
+    width: var(--circle-size);
+    height: var(--circle-size);
     top:2%;
     right: 19%;
   }
   .small-circle-13 {
-    width: 13px;
-    height: 13px;
+    --circle-size: clamp(6px, 1vw, 13px);
+    width: var(--circle-size);
+    height: var(--circle-size);
     top: 55%;
     right: -5%;
   }

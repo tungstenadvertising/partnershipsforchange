@@ -115,7 +115,6 @@ const navigationLinks = [
     /* Mobile menu content when transparent */
     #mobile-menu.mobile-menu-open {
       pointer-events: auto;
-
       .mobile-menu-link {
         color: white;
         transition: color 0.3s ease, background 0.3s ease;
@@ -142,13 +141,6 @@ const navigationLinks = [
     }
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
-    nav a:not(.bg-primary) {
-      color: #374151;
-      &:hover { color: #004B85; }
-    }
-
-    #menuButton svg { color: #374151; }
-
     /* Show dark logo, hide regular logo */
     .logo-regular { display: none; }
     .logo-dark { display: block; }
@@ -168,8 +160,8 @@ const navigationLinks = [
       pointer-events: auto;
       /* background: linear-gradient(hsl(0 0% 100% / .6), hsl(202 50% 80%)); */
       .mobile-menu-link {
-        color: #374151; */
-        &:hover { color: #004B85; }
+        color:  var(--color-primary);
+        &:hover { color: var(--color-secondary); }
       }
     }
   }
