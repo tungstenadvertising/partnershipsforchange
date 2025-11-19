@@ -149,7 +149,11 @@ const globeId = 'hero-globe-container';
         // Update offset on window resize
         window.addEventListener('resize', updateGlobeOffset);
 
-        globe.enablePointerInteraction(false); // Disable interaction for static hero
+        // Disable all interactions
+        globe.enablePointerInteraction(false); // Disable pointer interaction
+        globe.controls().enableZoom = false; // Disable zoom
+        globe.controls().enableRotate = false; // Disable rotation
+        globe.controls().enablePan = false; // Disable panning
 
         // Get the Three.js scene and add custom lighting for glow effect
         const scene = globe.scene();
