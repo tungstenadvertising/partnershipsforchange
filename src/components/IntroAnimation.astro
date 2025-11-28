@@ -1,0 +1,360 @@
+---
+import AboutImage1 from '../images/about-image-01.png';
+import AboutImage2 from '../images/about-image-02.png';
+import AboutImage3 from '../images/about-image-03.png';
+import AboutImage4 from '../images/about-image-04.png';
+import HeroGlobe from '../images/hero-globe.png';
+
+// Intro animation frames configuration
+const frames = [
+  {
+    id: 'frame-1',
+    text: 'Every Change Begins with One.',
+    image: AboutImage1,
+  },
+  {
+    id: 'frame-2',
+    text: 'Integrity and compassion shape who we are.',
+    image: AboutImage2,
+  },
+  {
+    id: 'frame-3',
+    text: 'Partnership is the bridge that turns vision into action.',
+    image: AboutImage3,
+  },
+  {
+    id: 'frame-4',
+    text: 'Together, we build a sustainable world.',
+    image: AboutImage4,
+  },
+  {
+    id: 'frame-5',
+    text: '35 Years of Partnerships Driving Global Change',
+    image: HeroGlobe,
+  }
+];
+---
+
+<div id="intro-animation" class="intro-overlay">
+  <div class="intro-slides">
+    {frames.map((frame, index) => (
+      <div
+        class={`intro-slide ${index === 0 ? 'active' : ''}`}
+        data-frame={frame.id}
+        >
+        <!-- Image content -->
+        <div class="intro-image-container">
+          <img src={frame.image.src} alt="" class="intro-image" />
+        </div>
+
+        <!-- Text content -->
+        <div class="intro-text">
+          <p class="intro-text-content">
+            {frame.text}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const totalFrames = 5;
+  const frameDuration = 2; // 2 seconds per frame
+  let masterTimeline: gsap.core.Timeline | null = null;
+  let isVisible = true;
+
+  function initIntroAnimation() {
+    const overlay = document.getElementById('intro-animation');
+    if (!overlay) return;
+
+    const slides = overlay.querySelectorAll('.intro-slide');
+    if (slides.length === 0) return;
+
+    // Set initial state - only first slide visible
+    slides.forEach((slide, index) => {
+      const textElement = slide.querySelector('.intro-text-content') as HTMLElement;
+      const imageElement = slide.querySelector('.intro-image') as HTMLElement;
+      if (index === 0) {
+        gsap.set(slide, { opacity: 1, zIndex: 10, scale: 1 });
+        // First slide text and image should be animated in
+        if (textElement) {
+          gsap.set(textElement, { opacity: 0, y: 30, filter: 'blur(10px)' });
+        }
+        if (imageElement) {
+          gsap.set(imageElement, { opacity: 0, y: -30, scale: 0.9, filter: 'blur(10px)' });
+        }
+      } else {
+        gsap.set(slide, { opacity: 0, zIndex: 0, scale: 1 });
+        if (textElement) {
+          gsap.set(textElement, { opacity: 0, y: 30, filter: 'blur(10px)' });
+        }
+        if (imageElement) {
+          gsap.set(imageElement, { opacity: 0, y: -30, scale: 0.9, filter: 'blur(10px)' });
+        }
+      }
+    });
+
+    // Create master timeline for automatic sequencing
+    const timeline = gsap.timeline({
+      paused: false,
+      onComplete: () => {
+        // Animation complete - all frames shown
+        console.log('Intro animation complete');
+      }
+    });
+    masterTimeline = timeline;
+
+    // Track when animation starts
+    const animationStartTime = Date.now();
+
+    // Build timeline with smart transitions between frames
+    slides.forEach((slide, index) => {
+      const textElement = slide.querySelector('.intro-text-content') as HTMLElement;
+      const imageElement = slide.querySelector('.intro-image') as HTMLElement;
+
+      if (index === 0) {
+        // First frame - animate image and text in, then hold
+        timeline
+          .to(imageElement, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 1,
+            ease: 'power3.out'
+          })
+          .to(textElement, {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 1,
+            ease: 'power3.out'
+          }, '-=0.5') // Start slightly after image
+          .to({}, { duration: frameDuration }); // Hold for frame duration
+      } else {
+        const prevSlide = slides[index - 1] as HTMLElement;
+        const prevText = prevSlide.querySelector('.intro-text-content') as HTMLElement;
+        const prevImage = prevSlide.querySelector('.intro-image') as HTMLElement;
+
+        // Animate previous slide out and current slide in
+        // First, set up the next slide's initial state
+        timeline
+          .set(slide, { zIndex: 10, opacity: 0, scale: 1.05 })
+          .set(textElement, { opacity: 0, y: 30, filter: 'blur(10px)' })
+          .set(imageElement, { opacity: 0, y: -30, scale: 0.9, filter: 'blur(10px)' })
+          // Fade out previous slide, image and text
+          .to(prevSlide, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.6,
+            ease: 'power2.in',
+            onComplete: () => {
+              gsap.set(prevSlide, { zIndex: 0 });
+            }
+          })
+          .to(prevImage || prevSlide, {
+            opacity: 0,
+            y: -20,
+            scale: 0.95,
+            filter: 'blur(10px)',
+            duration: 0.6,
+            ease: 'power2.in'
+          }, '<') // Start at same time as slide fade
+          .to(prevText || prevSlide, {
+            opacity: 0,
+            y: -20,
+            filter: 'blur(10px)',
+            duration: 0.6,
+            ease: 'power2.in'
+          }, '<') // Start at same time
+          // Fade in current slide
+          .to(slide, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.6,
+            ease: 'power2.out'
+          }, '-=0.3') // Start slightly before previous ends
+          // Animate image in
+          .to(imageElement, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 0.8,
+            ease: 'power3.out'
+          }, '-=0.4') // Start during slide fade
+          // Animate text in
+          .to(textElement, {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.8,
+            ease: 'power3.out'
+          }, '-=0.6') // Start slightly after image
+          // Hold current frame for duration
+          .to({}, { duration: frameDuration });
+      }
+    });
+
+    // Calculate minimum animation duration (all frames + transitions)
+    const minAnimationDuration = (totalFrames * frameDuration) + (totalFrames - 1) * 1.4; // ~12 seconds total
+
+    // Expose function to hide intro when globe is ready
+    (window as any).hideIntroAnimation = () => {
+      isVisible = false;
+
+      const elapsed = (Date.now() - animationStartTime) / 1000;
+      const remainingTime = Math.max(0, minAnimationDuration - elapsed);
+
+      // Wait for minimum duration or let timeline complete naturally
+      if (remainingTime > 0) {
+        setTimeout(() => {
+          // Kill the timeline if it's still running
+          if (masterTimeline) {
+            masterTimeline.kill();
+            masterTimeline = null;
+          }
+
+          // Fade out the entire overlay
+          gsap.to(overlay, {
+            opacity: 0,
+            duration: 1.2,
+            ease: 'power2.inOut',
+            onComplete: () => {
+              overlay.style.display = 'none';
+            }
+          });
+        }, remainingTime * 1000);
+      } else {
+        // Minimum time has passed, hide immediately
+        if (masterTimeline) {
+          masterTimeline.kill();
+          masterTimeline = null;
+        }
+
+        gsap.to(overlay, {
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            overlay.style.display = 'none';
+          }
+        });
+      }
+    };
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initIntroAnimation);
+  } else {
+    initIntroAnimation();
+  }
+</script>
+
+<style>
+  .intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+    will-change: opacity;
+    background: linear-gradient(360deg, #FFFFFF 4.85%, #21C4DB 36.34%, #01BBD6 42.1%, #004B85 76.95%, #003761 100%);
+  }
+
+  .intro-slides {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .intro-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    will-change: opacity;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  /* Image */
+  .intro-image-container {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .intro-image {
+    max-width: 90%;
+    max-height: 50vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+  }
+
+  @media (min-width: 640px) {
+    .intro-image {
+      max-width: 70%;
+      max-height: 55vh;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .intro-image {
+      max-width: 60%;
+      max-height: 60vh;
+    }
+  }
+
+  /* Text */
+  .intro-text {
+    position: relative;
+    z-index: 10;
+    padding: 0 2rem 2rem;
+    text-align: center;
+  }
+
+  @media (min-width: 1024px) {
+    .intro-text {
+      padding: 2.5rem 2rem;
+    }
+  }
+
+  .intro-text-content {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #003761;
+    max-width: 42rem;
+    margin: 0 auto;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 640px) {
+    .intro-text-content {
+      font-size: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .intro-text-content {
+      font-size: 2.5rem;
+      max-width: 48rem;
+    }
+  }
+</style>
+
